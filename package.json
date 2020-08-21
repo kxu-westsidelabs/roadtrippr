@@ -1,0 +1,16 @@
+{
+  "name": "routes",
+  "version": "1.0.0",
+  "description": "",
+  "main": "process.js",
+  "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.1.6",
+    "@mapbox/polyline": "^1.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
