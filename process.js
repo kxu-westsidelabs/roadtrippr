@@ -70,7 +70,7 @@ function decodeAndGenerateGeoJSON(polyline) {
         "features": []
     };
 
-    MapboxPolyline.decode(polyline).forEach(function(coord) {
+    MapboxPolyline.decode(polyline).forEach(function(coord, idx) {
         geoJSON.features[idx] = coordToFeature(coord);
     }, geoJSON);
 
