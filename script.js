@@ -2,7 +2,7 @@
  * TrailBlazrr
  */
 function getMapboxTiles() {
-    return L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    return L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         accessToken: mb,
         attribution: '© <a href="https://www.mapbox.com/feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
         tileSize: 512,
@@ -250,9 +250,12 @@ var map, svg, g;
 d3.json(pointsFile, function(collection) {
 
     // center Map on middle Waypoint
-    var md = Math.round(collection.features.length / 2);
-    var coordCenter = collection.features[md].geometry.coordinates;
-    var zoom = 9;
+    //var md = Math.round(collection.features.length / 2);
+    //var coordCenter = collection.features[md].geometry.coordinates;
+
+    // manually center on Concordia, Kansas
+    var coordCenter = ["-97.688969", "39.5610492"];
+    var zoom = 5;
 
     var mapboxTiles = getMapboxTiles();
     map = L.map('map')
