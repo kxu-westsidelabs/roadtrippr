@@ -1,273 +1,180 @@
-/**
- * TrailBlazrr
- */
-function getMapboxTiles() {
-    return L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/light-v10/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        accessToken: mb,
-        attribution: '© <a href="https://www.mapbox.com/feedback/">Mapbox</a> © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        tileSize: 512,
-        zoomOffset: -1
-    });
-}
+// update data for one frame
+function updateData(trip, incrementLength, counter, frames) {
 
-/**
- * Convert lat/long --> SVG coordinates
- * Accepts a point from GeoJSON
- */
-function applyLatLngToLayer(d) {
-    var y = d.geometry.coordinates[1];
-    var x = d.geometry.coordinates[0];
-    return map.latLngToLayerPoint(new L.LatLng(y, x));
-}
+    console.log(counter)
+    // length to visualize for this frame
+    const frameLength = incrementLength * counter;
 
-/**
- * Use Leaflet to implmenet a D3 geometric transformation
- *
- * latLgnToLayerPoint is a Leaflet ocnversion method that returns
- * the map layer point that corresponds to a given geographical
- * coordinate.
- *
- * This is useful for placing overlays on a map
- */
-function projectPoint(x, y) {
-    var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-    this.stream.point(point.x, point.y);
-}
+    // calculate where to place the marker
+    const pointAlong = turf.along(trip, frameLength);
 
-function render(collection) {
-    console.log("dumping collection", collection);
+    // cut the line at the point
+    const lineAlong = turf.lineSplit(trip, pointAlong).features[0];
 
-    //stream transform. transforms geometry before passing it to
-    // listener. Can be used in conjunction with d3.geo.path
-    // to implement the transform.
-    var transform = d3.geo.transform({
-        point: projectPoint
-    });
+    map.getSource('pointAlong').setData(pointAlong);
+    map.getSource('lineAlong').setData(lineAlong);
+    map.flyTo({center: pointAlong.geometry.coordinates});
 
-    //d3.geo.path translates GeoJSON to SVG path codes.
-    //essentially a path generator. In this case it's
-    // a path generator referencing our custom "projection"
-    // which is the Leaflet method latLngToLayerPoint inside
-    // our function called projectPoint
-    var d3path = d3.geo.path().projection(transform);
-    //console.log("d3path", d3path);
-
-    // Define a function that generates a line from input points
-    //
-    // Input points need to be converted from Lat/Long to Map Units
-    // via applyLatLngToLayer
-    var toLine = d3.svg.line()
-        .interpolate("linear")
-        .x(function(d) {
-            return applyLatLngToLayer(d).x
-        })
-        .y(function(d) {
-            return applyLatLngToLayer(d).y
+    if (counter === 0) map.getSource('startPoint').setData(pointAlong);
+    if (counter === frames) {
+        map.getSource('endPoint').setData(pointAlong);
+        map.getSource('pointAlong').setData({
+            type: 'FeatureCollection',
+            features: [],
         });
-    //console.log("toLine", toLine);
-
-    // Append features to Group element
-    var ptFeatures = g.selectAll("circle")
-        .data(collection.features)
-        .enter()
-        .append("circle")
-        .attr("r", 3)
-        .attr("class", "waypoints");
-    console.log("ptFeatures", ptFeatures);
-
-    // Make the points into a single line/path
-    var linePath = g.selectAll(".lineConnect")
-        .data([collection.features])
-        .enter()
-        .append("path")
-        .attr("class", "lineConnect");
-
-    // Circle that travels along the Path
-    var marker = g.append("circle")
-        .attr("r", 10)
-        .attr("id", "marker")
-        .attr("class", "travelMarker");
-
-    var len = collection.features.length;
-    var originANDdestination = [
-        collection.features[0],
-        collection.features[len-1]
-    ];
-
-    var begend = g.selectAll(".drinks")
-        .data(originANDdestination)
-        .enter()
-        .append("circle", ".drinks")
-        .attr("r", 5)
-        .style("fill", "red")
-        .style("opacity", "1");
-
-    // Add labels to starting and ending coordinates
-    var text = g.selectAll("text")
-        .data(originANDdestination)
-        .enter()
-        .append("text")
-        .text(function(d) {
-            return d.properties.name
-        })
-        .attr("class", "locnames")
-        .attr("y", function(d) {
-            return -10
-        })
-
-    // when the user zooms in or out you need to reset
-    // the view
-    map.on("zoom", reset);
-
-    // this puts stuff on the map!
-    reset();
-    transition();
-
-    /**
-     * Reset SVG to Features
-     */
-    function reset() {
-        var bounds = d3path.bounds(collection),
-            topLeft = bounds[0],
-            bottomRight = bounds[1];
-
-        // here you're setting some styles, width, heigh etc
-        // to the SVG. Note that we're adding a little height and
-        // width because otherwise the bounding box would perfectly
-        // cover our features BUT... since you might be using a big
-        // circle to represent a 1 dimensional point, the circle
-        // might get cut off.
-
-        text.attr("transform",
-            function(d) {
-                return "translate(" +
-                    applyLatLngToLayer(d).x + "," +
-                    applyLatLngToLayer(d).y + ")";
-            });
-
-
-        // for the points we need to convert from latlong
-        // to map units
-        begend.attr("transform",
-            function(d) {
-                return "translate(" +
-                    applyLatLngToLayer(d).x + "," +
-                    applyLatLngToLayer(d).y + ")";
-            });
-
-        ptFeatures.attr("transform",
-            function(d) {
-                return "translate(" +
-                    applyLatLngToLayer(d).x + "," +
-                    applyLatLngToLayer(d).y + ")";
-            });
-
-        // again, not best practice, but I'm harding coding
-        // the starting point
-        marker.attr("transform",
-            function() {
-                var y = collection.features[0].geometry.coordinates[1]
-                var x = collection.features[0].geometry.coordinates[0]
-                return "translate(" +
-                    map.latLngToLayerPoint(new L.LatLng(y, x)).x + "," +
-                    map.latLngToLayerPoint(new L.LatLng(y, x)).y + ")";
-            });
-
-
-        // Setting the size and location of the overall SVG container
-        svg.attr("width", bottomRight[0] - topLeft[0] + 120)
-            .attr("height", bottomRight[1] - topLeft[1] + 120)
-            .style("left", topLeft[0] - 50 + "px")
-            .style("top", topLeft[1] - 50 + "px");
-
-
-        // linePath.attr("d", d3path);
-        linePath.attr("d", toLine)
-        // ptPath.attr("d", d3path);
-        g.attr("transform", "translate(" + (-topLeft[0] + 50) + "," + (-topLeft[1] + 50) + ")");
     }
-
-    // the transition function could have been done above using
-    // chaining but it's cleaner to have a separate function.
-    // the transition. Dash array expects "500, 30" where
-    // 500 is the length of the "dash" 30 is the length of the
-    // gap. So if you had a line that is 500 long and you used
-    // "500, 0" you would have a solid line. If you had "500,500"
-    // you would have a 500px line followed by a 500px gap. This
-    // can be manipulated by starting with a complete gap "0,500"
-    // then a small line "1,500" then bigger line "2,500" and so
-    // on. The values themselves ("0,500", "1,500" etc) are being
-    // fed to the attrTween operator
-    function transition() {
-        linePath.transition()
-            .duration(7500)
-            .attrTween("stroke-dasharray", tweenDash)
-            //.each("end", function() {
-                //d3.select(this).call(transition);   // infinite loop
-            //});
-    }
-
-    // this function feeds the attrTween operator above with the
-    // stroke and dash lengths
-    function tweenDash() {
-        return function(t) {
-            //total length of path (single value)
-            var l = linePath.node().getTotalLength();
-
-            // this is creating a function called interpolate which takes
-            // as input a single value 0-1. The function will interpolate
-            // between the numbers embedded in a string. An example might
-            // be interpolatString("0,500", "500,500") in which case
-            // the first number would interpolate through 0-500 and the
-            // second number through 500-500 (always 500). So, then
-            // if you used interpolate(0.5) you would get "250, 500"
-            // when input into the attrTween above this means give me
-            // a line of length 250 followed by a gap of 500. Since the
-            // total line length, though is only 500 to begin with this
-            // essentially says give me a line of 250px followed by a gap
-            // of 250px.
-            interpolate = d3.interpolateString("0," + l, l + "," + l);
-            //t is fraction of time 0-1 since transition began
-            var marker = d3.select("#marker");
-
-            // p is the point on the line (coordinates) at a given length
-            // along the line. In this case if l=50 and we're midway through
-            // the time then this would 25.
-            var p = linePath.node().getPointAtLength(t * l);
-
-            //Move the marker to that point
-            marker.attr("transform", "translate(" + p.x + "," + p.y + ")"); //move marker
-            console.log(interpolate(t))
-            return interpolate(t);
-        }
-    } //end tweenDash
-
 }
 
-var pointsFile = "roadtrip.json";
+function animateTrip(trip) {
 
-var map, svg, g;
-d3.json(pointsFile, function(collection) {
+    const { pickuptime, dropofftime } = trip.properties
+    // calculate real world duration of trip
+    const start = moment(pickuptime);
+    const end = moment(dropofftime);
+    const duration = end.diff(start, 'seconds');
+    const multiplier = 300;
+    const vizDuration = duration * (1 / multiplier)
+    const fps = 50
 
-    // center Map on middle Waypoint
-    //var md = Math.round(collection.features.length / 2);
-    //var coordCenter = collection.features[md].geometry.coordinates;
+    const frames = parseInt(fps * vizDuration);
 
-    // manually center on Concordia, Kansas
-    var coordCenter = ["-97.688969", "39.5610492"];
-    var zoom = 5;
+    console.log(`Trip Duration is ${duration} seconds`)
+    console.log(`Viz Duration is ${vizDuration} seconds`)
+    console.log(`Total Frames at ${fps}fps is ${frames}`)
 
-    var mapboxTiles = getMapboxTiles();
-    map = L.map('map')
-      .addLayer(mapboxTiles)
-      .setView([coordCenter[1], coordCenter[0]], zoom);
+    // divide length and duration by number of frames
+    const tripLength = turf.length(trip);
+    const incrementLength = tripLength / frames;
+    const interval = (vizDuration / frames) * 1000;
 
-    // add SVG to Leaflet overlay pane
-    svg = d3.select(map.getPanes().overlayPane).append("svg");
+    // updateData at the calculated interval
+    let counter = 0
+    console.log(frames)
+    const dataInterval = setInterval(() => {
+        updateData(trip, incrementLength, counter, frames)
+        if (counter === frames + 1) {
+            clearInterval(dataInterval)
+        } else {
+            counter += 1;
+        }
+    }, interval)
+}
 
-    // add g (group) element to SVG
-    // leaflet-zoom-hide is to prevent phantom SVG artificts during zoom in/out
-    g = svg.append("g").attr("class", "leaflet-zoom-hide");
+// Create the \`map\` object with the mapboxgl.Map constructor, referencing
+// the container div
+mapboxgl.accessToken = 'pk.eyJ1Ijoia3h1MTYiLCJhIjoiY2p5NXh1bzZqMGNrMzNkbzB1bjlsazluaCJ9.LWKf9jAXZmDmKgAWA-IS9g';
+const map = new mapboxgl.Map({
+    container: "map",
+    center: [
+        -86.75605, 33.54398
+    ],
+    zoom: 9,
+    scrollZoom: false,
+    style: 'mapbox://styles/mapbox/light-v9',
+});
 
-    render(collection);
+// Manually define roadtrip geoJSON
+const roadtrip = {
+    "type": "Feature",
+    "properties": {
+        "pickuptime": "10/3/13 1:21",
+        "dropofftime": "10/3/13 2:05",
+        "key": "1",
+        "hasfare": false
+    },
+    "geometry": {
+        "type": "LineString",
+        "coordinates": [
+            [-84.41399, 33.71927],
+            [-84.55835, 33.773],
+            [-84.843, 33.7207],
+            [-85.48198, 33.64726],
+            [-86.08693, 33.58727],
+            [-86.56049, 33.56115],
+            [-86.75605, 33.54398],
+            [-86.82005, 33.52091],
+            [-86.81724, 33.57459],
+            [-87.02852, 33.66409],
+            [-87.17233, 33.71729],
+            [-87.27646, 33.80678],
+            [-87.50744, 33.91363],
+            [-87.68261, 33.96247],
+            [-87.85847, 34.02753],
+            [-88.0594, 34.15331],
+            [-88.38016, 34.24563]
+        ]
+    }
+};
+
+map.on('style.load', () => {
+    const dummyGeojson = {
+        type: 'FeatureCollection',
+        features: []
+    }
+
+    map.addSource('lineAlong', {
+        type: 'geojson',
+        data: dummyGeojson
+    });
+
+    map.addLayer({
+        id: 'lineAlong',
+        type: 'line',
+        source: 'lineAlong',
+        paint: {
+            'line-width': 5,
+            'line-color': 'steelblue',
+            'line-opacity': 0.6,
+        }
+    })
+
+    map.addSource('pointAlong', {
+        type: 'geojson',
+        data: dummyGeojson,
+    });
+
+    map.addLayer({
+        id: 'pointAlong',
+        type: 'circle',
+        source: 'pointAlong',
+        paint: {
+            'circle-color': 'yellow',
+            'circle-stroke-width': 0.5,
+            'circle-stroke-color': '#444',
+        }
+    });
+
+    map.addSource('startPoint', {
+        type: 'geojson',
+        data: dummyGeojson,
+    });
+
+    map.addLayer({
+        id: 'startPoint',
+        type: 'circle',
+        source: 'startPoint',
+        paint: {
+            'circle-color': 'green',
+            'circle-stroke-width': 0.5,
+            'circle-stroke-color': '#444',
+        }
+    });
+
+    map.addSource('endPoint', {
+        type: 'geojson',
+        data: dummyGeojson,
+    });
+
+    map.addLayer({
+        id: 'endPoint',
+        type: 'circle',
+        source: 'endPoint',
+        paint: {
+            'circle-color': 'red',
+            'circle-stroke-width': 0.5,
+            'circle-stroke-color': '#444',
+        }
+    });
+
+    animateTrip(roadtrip);
 });
