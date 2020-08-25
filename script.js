@@ -63,14 +63,42 @@ function animateTrip(trip) {
 // Create the \`map\` object with the mapboxgl.Map constructor, referencing
 // the container div
 mapboxgl.accessToken = 'pk.eyJ1Ijoia3h1MTYiLCJhIjoiY2p5NXh1bzZqMGNrMzNkbzB1bjlsazluaCJ9.LWKf9jAXZmDmKgAWA-IS9g';
+
+const styles = {
+    light: "mapbox://styles/mapbox/light-v9",
+    watercolor: {
+        'version': 8,
+        'sources': {
+            'raster-tiles': {
+                'type': 'raster',
+                'tiles': [
+                    'https://stamen-tiles.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg'
+                ],
+                'tileSize': 256,
+                'attribution': 'Map tiles by <a target="_top" rel="noopener" href="http://stamen.com">Stamen Design</a>, under <a target="_top" rel="noopener" href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a target="_top" rel="noopener" href="http://openstreetmap.org">OpenStreetMap</a>, under <a target="_top" rel="noopener" href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>'
+            }
+        },
+        'layers': [
+            {
+                'id': 'simple-tiles',
+                'type': 'raster',
+                'source': 'raster-tiles',
+                'minzoom': 0,
+                'maxzoom': 22
+            }
+        ]
+    },
+    cali: "mapbox://styles/kxu16/cke3scnox0hmq19nj5a0d10g2",
+    standard: "mapbox://styles/kxu16/cke1v54jy0bae19pdh9dh961w"
+};
 const map = new mapboxgl.Map({
     container: "map",
     center: [
         -86.75605, 33.54398
     ],
-    zoom: 9,
+    zoom: 10,
     scrollZoom: false,
-    style: 'mapbox://styles/mapbox/light-v9',
+    style: styles.standard
 });
 
 // Manually define roadtrip geoJSON
