@@ -28,6 +28,7 @@ client
                 "35.6630437,-101.6226556",          // Lake Meredith
                 "36.0591321,-112.1136936",          // Grand Canyon
                 "36.3274844,-116.8196691",          // Death Valley
+                "35.7331104,-118.5046195",          // Kernville
                 "36.0049758,-121.4589416"           // Big Sur - Nacimiento
             ],
             key: process.env.GOOGLE_API_KEY
