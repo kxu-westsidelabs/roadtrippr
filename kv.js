@@ -207,70 +207,88 @@ var roadtrip = {
 	}
 };
 var waypoints = {
-  "type": "FeatureCollection",
-  "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -92.78227652, 34.8814952
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -92.78227652, 34.8814952
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -101.6226556, 35.6630437
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -112.1136936, 36.0591321
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -116.8196691, 36.3274844
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -118.5046195, 35.7331104
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-            -121.4589416, 36.0049758
-        ]
-      }
-    }
-  ]
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -92.78227652, 34.8814952
+                ]
+            },
+            "properties": {
+                "image_url": "https://www.nps.gov/lamr/planyourvisit/images/lake-Meredith-Fritch-fortress.jpg?maxwidth=650&autorotate=false"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -92.78227652, 34.8814952
+                ]
+            },
+            "properties": {
+                "image_url": "https://www.nps.gov/lamr/planyourvisit/images/lake-Meredith-Fritch-fortress.jpg?maxwidth=650&autorotate=false"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -101.6226556, 35.6630437
+                ]
+            },
+            "properties": {
+                "image_url": "https://www.nps.gov/lamr/planyourvisit/images/lake-Meredith-Fritch-fortress.jpg?maxwidth=650&autorotate=false"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -112.1136936, 36.0591321
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -116.8196691, 36.3274844
+                ]
+            },
+            "properties": {
+                "image_url": "https://www.nps.gov/lamr/planyourvisit/images/lake-Meredith-Fritch-fortress.jpg?maxwidth=650&autorotate=false"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -118.5046195, 35.7331104
+                ]
+            },
+            "properties": {
+                "image_url": "https://www.nps.gov/lamr/planyourvisit/images/lake-Meredith-Fritch-fortress.jpg?maxwidth=650&autorotate=false"
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -121.4589416, 36.0049758
+                ]
+            },
+            "properties": {
+                "image_url": "https://www.nps.gov/lamr/planyourvisit/images/lake-Meredith-Fritch-fortress.jpg?maxwidth=650&autorotate=false"
+            }
+        }
+    ]
 };

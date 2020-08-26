@@ -102,7 +102,7 @@ const map = new mapboxgl.Map({
     ],
     zoom: 10,
     //scrollZoom: false,
-    style: styles.cali
+    style: styles.standard
 });
 
 map.on('style.load', () => {
@@ -110,6 +110,22 @@ map.on('style.load', () => {
         type: 'FeatureCollection',
         features: []
     }
+
+    map.addSource('roadtrip', {
+        type: 'geojson',
+        data: roadtrip
+    });
+    map.addLayer({
+        id: 'roadtrip',
+        type: 'line',
+        source: 'roadtrip',
+        paint: {
+            'line-width': 5,
+            'line-color': 'red',
+            'line-opacity': 0.6,
+            'line-dasharray': [2, 1]
+        }
+    });
 
     map.addSource('lineAlong', {
         type: 'geojson',
@@ -176,7 +192,8 @@ map.on('style.load', () => {
     });
 
     /**
-     * Add markers for Waypoints
+     * Waypoint Markers
+     * TODO: Move styling to CSS
      */
     map.addSource('waypoints', {
         type: 'geojson',
@@ -191,6 +208,42 @@ map.on('style.load', () => {
             'circle-stroke-width': 0.8,
             'circle-stroke-color': '#444',
         }
+    });
+
+    /**
+     * Waypoint - Hover Effects
+     */
+    // Create a popup, but don't add it to the map yet.
+    var popup = new mapboxgl.Popup({
+        closeButton: false,
+        closeOnClick: false
+    });
+
+    map.on('mouseenter', 'waypoints', function(e) {
+        // Change the cursor style as a UI indicator.
+        map.getCanvas().style.cursor = 'pointer';
+
+        var coordinates = e.features[0].geometry.coordinates.slice();
+        var imageUrl = e.features[0].properties.image_url;
+
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+
+        // Populate the popup and set its coordinates
+        // based on the feature found.
+        popup
+            .setLngLat(coordinates)
+            .setHTML("<img src='" + imageUrl + "' width='160'/>")
+            .addTo(map);
+    });
+
+    map.on('mouseleave', 'waypoints', function() {
+        map.getCanvas().style.cursor = '';
+        popup.remove();
     });
 
     animateTrip(roadtrip);
