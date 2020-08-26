@@ -60,24 +60,27 @@ client
 
 
 function decodeAndGenerateGeoJSON(polyline) {
+    // TODO: Change pickuptime and dropofftime
     var geoJSON = {
-        "type": "FeatureCollection",
-        "crs": {
-            "type": "name",
-            "properties": {
-                "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
-            }
+        "type": "Feature",
+        "properties": {
+            "pickuptime": "10/3/13 1:21",
+            "dropofftime": "10/3/13 2:05"
         },
-        "features": []
-    };
+        "geometry": {
+            "type": "LineString",
+            "coordinates": []
+        }
+    }
 
-    MapboxPolyline.decode(polyline).forEach(function(coord, idx) {
-        geoJSON.features[idx] = coordToFeature(coord);
+    MapboxPolyline.decode(polyline).forEach(function(coord) {
+        geoJSON.geometry.coordinates.push(coord.reverse());
     }, geoJSON);
 
     return geoJSON;
 }
 
+/*
 function coordToFeature(coord) {
     return {
         "type": "Feature",
@@ -92,3 +95,4 @@ function coordToFeature(coord) {
         }
     };
 }
+*/
