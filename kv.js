@@ -252,6 +252,9 @@ var waypoints = {
                 "coordinates": [
                     -112.1136936, 36.0591321
                 ]
+            },
+            "properties": {
+                "image_url": "https://www.nps.gov/lamr/planyourvisit/images/lake-Meredith-Fritch-fortress.jpg?maxwidth=650&autorotate=false"
             }
         },
         {

@@ -95,6 +95,7 @@ const styles = {
     cali: "mapbox://styles/kxu16/cke3scnox0hmq19nj5a0d10g2",
     standard: "mapbox://styles/kxu16/cke1v54jy0bae19pdh9dh961w"
 };
+
 const map = new mapboxgl.Map({
     container: "map",
     center: [
@@ -139,7 +140,7 @@ map.on('style.load', () => {
         paint: {
             'line-width': 5,
             'line-color': 'steelblue',
-            'line-opacity': 0.6,
+            'line-opacity': 1.0
         }
     })
 
