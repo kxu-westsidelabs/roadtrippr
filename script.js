@@ -13,7 +13,7 @@ function updateData(trip, incrementLength, counter, frames) {
 
     map.getSource('pointAlong').setData(pointAlong);
     map.getSource('lineAlong').setData(lineAlong);
-    map.flyTo({center: pointAlong.geometry.coordinates});
+    //map.flyTo({center: pointAlong.geometry.coordinates});
 
     if (counter === 0) map.getSource('startPoint').setData(pointAlong);
     if (counter === frames) {
@@ -96,14 +96,22 @@ const styles = {
     standard: "mapbox://styles/kxu16/cke1v54jy0bae19pdh9dh961w"
 };
 
+// load file
+
+var gDirectionsParser = new GDirectionsParser(response);
+var roadtrip    = gDirectionsParser.getRouteGeoJSON(),
+    waypoints   = gDirectionsParser.getWaypointsGeoJSON(),
+    bounds      = gDirectionsParser.getBoundingBox();
+
 const map = new mapboxgl.Map({
     container: "map",
-    center: [
-        -86.75605, 33.54398
-    ],
-    zoom: 10,
+    //center: [
+        //-86.75605, 33.54398
+    //],
+    //zoom: 10,
     //scrollZoom: false,
-    style: styles.standard
+    style: styles.standard,
+    preserveDrawingBuffer: true
 });
 
 map.on('style.load', () => {
@@ -192,10 +200,8 @@ map.on('style.load', () => {
         }
     });
 
-    /**
-     * Waypoint Markers
-     * TODO: Move styling to CSS
-     */
+    // Waypoint Markers
+    // TODO: move styling out of here
     map.addSource('waypoints', {
         type: 'geojson',
         data: waypoints
@@ -211,9 +217,7 @@ map.on('style.load', () => {
         }
     });
 
-    /**
-     * Waypoint - Hover Effects
-     */
+    // Waypoint - Hover effects
     // Create a popup, but don't add it to the map yet.
     var popup = new mapboxgl.Popup({
         closeButton: false,
@@ -247,5 +251,19 @@ map.on('style.load', () => {
         popup.remove();
     });
 
+    map.fitBounds(bounds, {
+        padding: 50
+    });
+
     animateTrip(roadtrip);
+});
+
+document.getElementById('replay').addEventListener('click', function() {
+    animateTrip(roadtrip);
+});
+
+document.getElementById('print').addEventListener('click', function() {
+    map.getCanvas().toBlob(function (blob) {
+        saveAs(blob, 'map.png');
+    })
 });

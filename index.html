@@ -5,7 +5,13 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css" rel="stylesheet" />
     <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/javascript-canvas-to-blob/3.28.0/js/canvas-to-blob.js"></script>
+    <script src="http://cdn.jsdelivr.net/g/filesaver.js"></script>
+
     <script src="kv.js"></script>
+    <script src="response.js"></script>
+    <script src="polyline.js"></script>
+    <script src="GDirectionsParser.js"></script>
     <script src="script.js" defer></script>
 
     <style>
@@ -22,10 +28,26 @@
         .mapboxgl-popup {
             max-width: 400px
         }
+        button {
+            display: block;
+            position: relative;
+            margin: 10px;
+            width: 75px;
+            height: 40px;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            font-size: 16px;
+            text-align: left;
+            color: #fff;
+            background: #ee8a65;
+        }
     </style>
 </head>
 <body>
      <div id="map"></div>
+     <button id="replay">Replay</button>
+     <button id="print">Print</button>
 </body>
 
 </html>
