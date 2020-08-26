@@ -28,10 +28,14 @@ function updateData(trip, incrementLength, counter, frames) {
 function animateTrip(trip) {
 
     const { pickuptime, dropofftime } = trip.properties
+
     // calculate real world duration of trip
     const start = moment(pickuptime);
     const end = moment(dropofftime);
     const duration = end.diff(start, 'seconds');
+    console.log("trip start:", start, "end", end);
+    console.log("total duration:", duration);
+
     const multiplier = 300;
     const vizDuration = duration * (1 / multiplier)
     const fps = 50
@@ -97,42 +101,9 @@ const map = new mapboxgl.Map({
         -86.75605, 33.54398
     ],
     zoom: 10,
-    scrollZoom: false,
-    style: styles.standard
+    //scrollZoom: false,
+    style: styles.cali
 });
-
-// Manually define roadtrip geoJSON
-const roadtrip = {
-    "type": "Feature",
-    "properties": {
-        "pickuptime": "10/3/13 1:21",
-        "dropofftime": "10/3/13 2:05",
-        "key": "1",
-        "hasfare": false
-    },
-    "geometry": {
-        "type": "LineString",
-        "coordinates": [
-            [-84.41399, 33.71927],
-            [-84.55835, 33.773],
-            [-84.843, 33.7207],
-            [-85.48198, 33.64726],
-            [-86.08693, 33.58727],
-            [-86.56049, 33.56115],
-            [-86.75605, 33.54398],
-            [-86.82005, 33.52091],
-            [-86.81724, 33.57459],
-            [-87.02852, 33.66409],
-            [-87.17233, 33.71729],
-            [-87.27646, 33.80678],
-            [-87.50744, 33.91363],
-            [-87.68261, 33.96247],
-            [-87.85847, 34.02753],
-            [-88.0594, 34.15331],
-            [-88.38016, 34.24563]
-        ]
-    }
-};
 
 map.on('style.load', () => {
     const dummyGeojson = {
@@ -200,6 +171,24 @@ map.on('style.load', () => {
         paint: {
             'circle-color': 'red',
             'circle-stroke-width': 0.5,
+            'circle-stroke-color': '#444',
+        }
+    });
+
+    /**
+     * Add markers for Waypoints
+     */
+    map.addSource('waypoints', {
+        type: 'geojson',
+        data: waypoints
+    });
+    map.addLayer({
+        id: 'waypoints',
+        type: 'circle',
+        source: 'waypoints',
+        paint: {
+            'circle-color': 'blue',
+            'circle-stroke-width': 0.8,
             'circle-stroke-color': '#444',
         }
     });
