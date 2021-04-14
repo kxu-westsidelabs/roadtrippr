@@ -12,7 +12,6 @@
  */
 const { Client, Status } = require("@googlemaps/google-maps-services-js");
 
-// this will come from Form input - selected using Places API
 const points = [
     "Atlanta, GA",
     "Williams Junction, AR",
@@ -21,7 +20,18 @@ const points = [
     "Death Valley National Park, CA",
     "Kernville, CA",
     "Big Sur, CA",
-    "1020 6th St, Santa Monica, CA"
+    "1020 6th St, Santa Monica, CA",
+    "Whitney Portal Rd, Lone Pine, CA",
+    "1020 6th St, Santa Monica, CA",
+    "8622 Kennel Way, La Jolla, CA",
+    "1020 6th St, Santa Monica, CA",
+    "St. George, UT",
+    "Fishlake National Forest, UT",
+    "Mesa Lakes, CO",
+    "Almont, CO",
+    "Denver, CO",
+    "St. Louis, MO",
+    "Atlanta, GA",
 ];
 
 const client = new Client({});
@@ -35,8 +45,8 @@ client.directions({
     timeout: 5000,  // milliseconds
 })
 .then((r) => {
-    //console.log(JSON.stringify(r.data));
-    console.log(JSON.stringify(r.data, null, 2));
+    console.log(JSON.stringify(r.data));
+    //console.log(JSON.stringify(r.data, null, 2));
 })
 .catch(err => {
     console.log("ERR:", err);
