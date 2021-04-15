@@ -86,36 +86,36 @@ Google Maps directions response - extended sample in [geocoded_waypoints.json](g
 
 ```json
 {
-	"routes": [
-		{
-			"legs": [
+  "legs": [
+    {
+      "distance": {
+        "text": "558 mi",
+          "value": 897938
+      },
+      "end_address": "Williams Junction, AR 72126, USA",
+      "end_location": {
+        "lat": 34.8814,
+        "lng": -92.7735577
+      },
+      "start_address": "Atlanta, GA, USA",
+      "start_location": {
+        "lat": 33.7484483,
+        "lng": -84.387653
+      },
+      "steps": [
         {
-          "distance": {
-            "text": "558 mi",
-            "value": 897938
+          "polyline": {
+            "points": "yn~lEx}`bOQCi@Oy@[aA["
           },
-          "end_address": "Williams Junction, AR 72126, USA",
-          "end_location": {
-            "lat": 34.8814,
-            "lng": -92.7735577
-          },
-          "start_address": "Atlanta, GA, USA",
           "start_location": {
             "lat": 33.7484483,
             "lng": -84.387653
           },
-          "steps": [
-            {
-              "polyline": {
-                "points": "yn~lEx}`bOQCi@Oy@[aA["
-              },
-              "start_location": {
-                "lat": 33.7484483,
-                "lng": -84.387653
-              },
-              "travel_mode": "DRIVING"
-            },
-			...
+          "travel_mode": "DRIVING"
+        },
+      ]
+    }
+  ]
 }
 
 ```
@@ -145,7 +145,7 @@ Waypoints are stored as GeoJSON with coordinates and metadata for each point.
                 "orientation": "portrait"
             }
         },
-      ...
+        // ...
    ]
 }
 ```
