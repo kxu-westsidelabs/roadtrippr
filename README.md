@@ -1,3 +1,9 @@
+# Roadtrippr
+
+![Animated Roadtrip](roadtrippr.gif)
+
+See the [live version](https://kxu-westsidelabs.github.io/roadtrippr/)
+
 ## Project Overview
 
 There are 3 steps when converting a list of addresses into a mappable route. 
