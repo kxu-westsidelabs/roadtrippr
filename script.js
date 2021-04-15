@@ -215,7 +215,6 @@ const styles = {
 const map = new mapboxgl.Map({
     container: "map",
     style: styles.cali,
-    //style: styles.watercolor,
     preserveDrawingBuffer: true
 });
 
@@ -355,17 +354,15 @@ const map = new mapboxgl.Map({
             popup
                 .setLngLat(coordinates)
                 .setHTML(`<div style="margin: auto;">
-                    <h3>${title}</h3>
-                    <img src=${image} width='${width}'/>
+                    <h3 style="margin: 0 0 .5em 0;">${title}</h3>
+                    <img style="display: block; margin: auto;" src=${image} width='${width}'/>
                 </div>`)
                 .addTo(map);
         });
-
         map.fitBounds(bounds, {
             padding: 50
         });
-
-        animateTrip(roadtrip);
+        //animateTrip(roadtrip);
     });
 })();
 
@@ -374,15 +371,23 @@ const map = new mapboxgl.Map({
  * Map Interactions
  ***********************************************/
 
-document.getElementById('replay').addEventListener('click', function() {
+document.getElementById('animate').addEventListener('click', function() {
     animateTrip(roadtrip);
 });
-
 document.getElementById('print').addEventListener('click', function() {
     map.getCanvas().toBlob(function (blob) {
         saveAs(blob, 'map.png');
     })
 });
+
+var inputs = document.getElementById('menu').getElementsByTagName('input');
+function switchLayer(e) {
+    map.setStyle(styles[e.target.id]);
+}
+for (var i = 0; i < inputs.length; i++) {
+    console.log(switchLayer);
+    inputs[i].onclick = switchLayer;
+}
 
 // update data for one frame
 function updateData(trip, incrementLength, counter, frames) {

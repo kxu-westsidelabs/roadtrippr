@@ -23,29 +23,40 @@
             bottom: 0;
             width: 100%;
         }
+        #menu {
+            position: absolute;
+            background: #efefef;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+        }
+        #menu-actions {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            background: #efefef;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+        }
         .mapboxgl-popup {
             max-width: 400px
-        }
-        button {
-            display: block;
-            position: relative;
-            margin: 10px;
-            width: 75px;
-            height: 40px;
-            padding: 10px;
-            border: none;
-            border-radius: 3px;
-            font-size: 16px;
-            text-align: left;
-            color: #fff;
-            background: #ee8a65;
         }
     </style>
 </head>
 <body>
      <div id="map"></div>
-     <button id="replay">Replay</button>
-     <button id="print">Print</button>
+     <div id="menu">
+         <strong><span>Map Styles:</span></strong>
+         <input id="cali" type="radio" name="rtoggle" value="cali" checked="checked">
+         <label for="cali">cali</label>
+         <input id="watercolor" type="radio" name="rtoggle" value="watercolor">
+         <label for="watercolor">watercolor</label>
+         <input id="standard" type="radio" name="rtoggle" value="standard">
+         <label for="standard">standard</label>
+
+         <strong><span style="margin: 0 0 0 1em;">Actions:</span></strong>
+         <button id="animate">Animate</button>
+         <button id="print">Print</button>
+     </div>
 </body>
 
 </html>
