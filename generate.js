@@ -20,7 +20,7 @@ const points = [
     "Death Valley National Park, CA",
     "Kernville, CA",
     "Big Sur, CA",
-    "1020 6th St, Santa Monica, CA",
+    "4354 Melrose Ave, Los Angeles, CA",
     "Whitney Portal Rd, Lone Pine, CA",
     "1020 6th St, Santa Monica, CA",
     "8622 Kennel Way, La Jolla, CA",
