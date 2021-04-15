@@ -145,7 +145,6 @@ Waypoints are stored as GeoJSON with coordinates and metadata for each point.
                 "orientation": "portrait"
             }
         },
-        // ...
    ]
 }
 ```
